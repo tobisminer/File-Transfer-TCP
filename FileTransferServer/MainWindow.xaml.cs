@@ -28,14 +28,12 @@ namespace FileTransferServer
         }
 
         private void CreateServerBtn_Click(object sender, RoutedEventArgs e)
-        {
-            int port;
-            if (int.TryParse(PortBox.Text, out port) == false)
+        { 
+            if (int.TryParse(PortBox.Text, out var port) == false)
             {
-                MessageBox.Show("Port musí být číslo!", "Port error", MessageBoxButton.OK);
+                MessageBox.Show("Port must be numeric!", "Port error", MessageBoxButton.OK);
                 return;
             }
-
             var window = new ServerWindow(port);
             window.Show();
 
