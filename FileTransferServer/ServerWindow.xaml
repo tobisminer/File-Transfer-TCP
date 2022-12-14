@@ -7,8 +7,15 @@
         mc:Ignorable="d"
         Title="ServerWindow" Height="450" Width="800">
     <Grid>
-        <Label Content="Ultimátní server" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="22" FontWeight="Bold" Width="780" HorizontalContentAlignment="Center" Grid.ColumnSpan="2" Height="37"/>
-        <TextBlock x:Name="Output" HorizontalAlignment="Center" Margin="0,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="355" Width="780" FontSize="20"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="249*"/>
+            <ColumnDefinition Width="551*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="Ultimate server" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="22" FontWeight="Bold" Width="780" HorizontalContentAlignment="Center" Grid.ColumnSpan="2" Height="37"/>
+        <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="10,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="281" Width="780" FontSize="20" Grid.ColumnSpan="2"/>
+
+        <Label x:Name="IpLabel" Content="Server IP:" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Width="218" Height="37"/>
+        <Label x:Name="PortLabel" Content="Server Port:" Margin="30,52,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Height="37" Grid.Column="1" HorizontalAlignment="Left" Width="185"/>
 
     </Grid>
 </Window>

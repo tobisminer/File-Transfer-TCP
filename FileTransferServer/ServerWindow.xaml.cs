@@ -23,6 +23,8 @@ namespace FileTransferServer
             InitializeComponent();
             Port = port;
             CreateServer();
+            IpLabel.Content = "Server IP: " + GetLocalIpAddress();
+            PortLabel.Content = "Server Port: " + Port;
         }
         public static IPAddress GetLocalIpAddress()
         {
@@ -45,6 +47,11 @@ namespace FileTransferServer
             var listener = new TcpListener(GetLocalIpAddress(), Port);
             listener.Start();
             var socket = await listener.AcceptSocketAsync();
+            //get ip and port of client
+            var ip = socket.RemoteEndPoint?.ToString()?.Split(':')[0];
+            var port = socket.RemoteEndPoint?.ToString()?.Split(':')[1];
+            Output.Text += $"Client connected! With IP {ip}:{port}" + Environment.NewLine;
+            
             const int bufferSize = 1024;
 
             var header = new byte[bufferSize];
@@ -68,7 +75,7 @@ namespace FileTransferServer
             while (fileSize > 0)
             {
                 var buffer = new byte[bufferSize];
-                var size = socket.Receive(buffer, SocketFlags.Partial);
+                var size = await socket.ReceiveAsync(buffer, SocketFlags.Partial);
                 fs.Write(buffer, 0, size);
                 fileSize -= size;
             }
