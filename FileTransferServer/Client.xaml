@@ -8,10 +8,10 @@
         Title="Client" Height="200" Width="600">
     <Grid>
         <Button Content="Send files" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Click="Button_Click" Margin="376,71,0,0"/>
-        <TextBox HorizontalAlignment="Left" Margin="70,77,0,0" TextWrapping="Wrap" Text="IP" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="IPaddressBox" HorizontalAlignment="Left" Margin="70,77,0,0" TextWrapping="Wrap" Text="192.168.1.63" VerticalAlignment="Top" Width="120"/>
         <Label Content="Host IP address" HorizontalAlignment="Left" Margin="70,46,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.723,0.567" HorizontalContentAlignment="Center" Width="120"/>
         <Label Content="Port" HorizontalAlignment="Left" Margin="208,46,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.723,0.567" HorizontalContentAlignment="Center" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Margin="208,77,0,0" TextWrapping="Wrap" Text="Port" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="PortBox" HorizontalAlignment="Left" Margin="208,77,0,0" TextWrapping="Wrap" Text="23000" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

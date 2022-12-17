@@ -16,6 +16,7 @@
 
         <Label x:Name="IpLabel" Content="Server IP:" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Width="218" Height="37"/>
         <Label x:Name="PortLabel" Content="Server Port:" Margin="30,52,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Height="37" Grid.Column="1" HorizontalAlignment="Left" Width="185"/>
+        <ProgressBar x:Name="FileBar" Height="35" Margin="10,89,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>
