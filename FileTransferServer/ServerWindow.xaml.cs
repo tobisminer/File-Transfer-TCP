@@ -55,56 +55,49 @@ namespace FileTransferServer
             var watch = new Stopwatch();
             while (true)
             {
-                try
+                var socket = await Listener.AcceptSocketAsync();
+                watch.Restart();
+                Output.Items.Add($"Client connected! With IP {socket.RemoteEndPoint}");
+
+                const int bufferSize = 1024;
+
+                var header = new byte[bufferSize];
+                socket.Receive(header);
+                var headerStr = Encoding.ASCII.GetString(header);
+                var split = headerStr.Split(new[] { "\r\n" }, StringSplitOptions.None);
+                var headers = split.Where(
+                    s => s.Contains(':')).ToDictionary(
+                    s => s[..s.IndexOf(":", StringComparison.Ordinal)],
+                    s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
+
+                var fileSize = Convert.ToInt32(headers["Content-length"]);
+                var bufferCount = Convert.ToInt32(Math.Ceiling((double)fileSize / (double)bufferSize));
+                var filename = headers["Filename"];
+                Output.Items.Add($"File name: {filename}");
+                Output.Items.Add($"File size: {fileSize} bytes");
+                if (PathLabel.Content == "")
                 {
-                    var socket = await Listener.AcceptSocketAsync();
-                    watch.Restart();
-                    Output.Items.Add($"Client connected! With IP {socket.RemoteEndPoint}");
-
-                    const int bufferSize = 1024;
-
-                    var header = new byte[bufferSize];
-                    socket.Receive(header);
-                    var headerStr = Encoding.ASCII.GetString(header);
-                    var split = headerStr.Split(new[] { "\r\n" }, StringSplitOptions.None);
-                    var headers = split.Where(
-                        s => s.Contains(':')).ToDictionary(
-                        s => s[..s.IndexOf(":", StringComparison.Ordinal)],
-                        s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
-
-                    var fileSize = Convert.ToInt32(headers["Content-length"]);
-                    var bufferCount = Convert.ToInt32(Math.Ceiling((double)fileSize / (double)bufferSize));
-                    var filename = headers["Filename"];
-                    Output.Items.Add($"File name: {filename}");
-                    Output.Items.Add($"File size: {fileSize} bytes");
-                    if (PathLabel.Content == "")
-                    {
-                        MessageBox.Show("Please select a path to save the file! Saving to default spot, near exe file.", "Path error", MessageBoxButton.OK);
-                    }
-                    Output.Items.Add($"Saving to: {PathLabel.Content + filename}");
-                    var fs = new FileStream(PathLabel.Content + filename, FileMode.OpenOrCreate);
-
-                    var count = 0;
-                    while (fileSize > 0)
-                    {
-                        count++;
-                        var buffer = new byte[bufferSize];
-                        var size = await socket.ReceiveAsync(buffer, SocketFlags.Partial);
-                        fs.Write(buffer, 0, size);
-                        fileSize -= size;
-
-                        FileBar.Value = count * 100 / (double)bufferCount;
-                    }
-                    fs.Close();
-                    socket.Close();
-                    watch.Stop();
-                    Output.Items.Add($"File transfered in {watch.ElapsedMilliseconds} ms");
-                    Output.Items.Add("---------File transfer done!---------");
+                    MessageBox.Show("Please select a path to save the file! Saving to default spot, near exe file.", "Path error", MessageBoxButton.OK);
                 }
-                catch (Exception e)
+                Output.Items.Add($"Saving to: {PathLabel.Content + filename}");
+                var fs = new FileStream(PathLabel.Content + filename, FileMode.OpenOrCreate);
+
+                var count = 0;
+                while (fileSize > 0)
                 {
-                    // ignored
+                    count++;
+                    var buffer = new byte[bufferSize];
+                    var size = await socket.ReceiveAsync(buffer, SocketFlags.Partial);
+                    fs.Write(buffer, 0, size);
+                    fileSize -= size;
+
+                    FileBar.Value = count * 100 / (double)bufferCount;
                 }
+                fs.Close();
+                socket.Close();
+                watch.Stop();
+                Output.Items.Add($"File transfered in {watch.ElapsedMilliseconds} ms");
+                Output.Items.Add("---------File transfer done!---------");
             }
             
         }
