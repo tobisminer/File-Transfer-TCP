@@ -19,8 +19,10 @@ namespace FileTransferServer
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new OpenFileDialog();
-            fileDialog.Multiselect = true;
+            var fileDialog = new OpenFileDialog
+            {
+                Multiselect = true
+            };
             fileDialog.ShowDialog();
             if (fileDialog.FileName == "")
             {

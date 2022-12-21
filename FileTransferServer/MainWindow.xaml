@@ -12,10 +12,10 @@
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
         <Label Content="Ultimátní aplikace pro přenos souborů" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="22" FontWeight="Bold" Width="780" HorizontalContentAlignment="Center" Grid.ColumnSpan="2" Height="37"/>
-        <Button x:Name="CreateServerBtn" Content="Vytvořit server" HorizontalAlignment="Left" Margin="334,99,0,0" VerticalAlignment="Top" FontSize="20" Grid.ColumnSpan="2" Height="37" Width="135" Click="CreateServerBtn_Click"/>
+        <Button x:Name="CreateServerBtn" Content="Vytvořit server" HorizontalAlignment="Left" Margin="217,104,0,0" VerticalAlignment="Top" FontSize="20" Height="32" Width="139" Click="CreateServerBtn_Click"/>
         <Label Content="Port:" HorizontalAlignment="Left" Margin="20,99,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="20"/>
         <TextBox x:Name="PortBox" HorizontalAlignment="Left" Margin="81,104,0,0" TextWrapping="Wrap" Text="23000" VerticalAlignment="Top" Width="132" Height="32" FontSize="20"/>
-        <Button x:Name="CreateClient" Content="Vytvořit clienta" HorizontalAlignment="Left" Margin="99,102,0,0" VerticalAlignment="Top" FontSize="20" Height="36" Width="135" Grid.Column="1" Click="CreateClient_Click"/>
+        <Button x:Name="CreateClient" Content="Vytvořit clienta" HorizontalAlignment="Left" Margin="217,101,0,0" VerticalAlignment="Top" FontSize="20" Height="32" Width="144" Click="CreateClient_Click" Grid.Column="1"/>
 
     </Grid>
 </Window>

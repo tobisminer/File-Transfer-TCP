@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -7,6 +9,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using FileTransferServer.Properties;
 using Microsoft.Win32;
 
 
@@ -22,7 +26,10 @@ namespace FileTransferServer
         public ServerWindow(int port)
         {
             InitializeComponent();
+            PathLabel.Content = Properties.Settings.Default.OutputFolder;
             Port = port;
+            Listener = new TcpListener(GetLocalIpAddress(), Port);
+            Listener.Start();
             CreateServer();
             IpLabel.Content = "Server IP: " + GetLocalIpAddress();
             PortLabel.Content = "Server Port: " + Port;
@@ -45,49 +52,82 @@ namespace FileTransferServer
             {
                 MessageBox.Show("Port must be number between 0-65535!", "Port error", MessageBoxButton.OK);
             }
-            Listener = new TcpListener(GetLocalIpAddress(), Port);
-            Listener.Start();
-            var socket = await Listener.AcceptSocketAsync();
+            var watch = new Stopwatch();
+            while (true)
+            {
+                try
+                {
+                    var socket = await Listener.AcceptSocketAsync();
+                    watch.Restart();
+                    Output.Items.Add($"Client connected! With IP {socket.RemoteEndPoint}");
+
+                    const int bufferSize = 1024;
+
+                    var header = new byte[bufferSize];
+                    socket.Receive(header);
+                    var headerStr = Encoding.ASCII.GetString(header);
+                    var split = headerStr.Split(new[] { "\r\n" }, StringSplitOptions.None);
+                    var headers = split.Where(
+                        s => s.Contains(':')).ToDictionary(
+                        s => s[..s.IndexOf(":", StringComparison.Ordinal)],
+                        s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
+
+                    var fileSize = Convert.ToInt32(headers["Content-length"]);
+                    var bufferCount = Convert.ToInt32(Math.Ceiling((double)fileSize / (double)bufferSize));
+                    var filename = headers["Filename"];
+                    Output.Items.Add($"File name: {filename}");
+                    Output.Items.Add($"File size: {fileSize} bytes");
+                    if (PathLabel.Content == "")
+                    {
+                        MessageBox.Show("Please select a path to save the file! Saving to default spot, near exe file.", "Path error", MessageBoxButton.OK);
+                    }
+                    Output.Items.Add($"Saving to: {PathLabel.Content + filename}");
+                    var fs = new FileStream(PathLabel.Content + filename, FileMode.OpenOrCreate);
+
+                    var count = 0;
+                    while (fileSize > 0)
+                    {
+                        count++;
+                        var buffer = new byte[bufferSize];
+                        var size = await socket.ReceiveAsync(buffer, SocketFlags.Partial);
+                        fs.Write(buffer, 0, size);
+                        fileSize -= size;
+
+                        FileBar.Value = count * 100 / (double)bufferCount;
+                    }
+                    fs.Close();
+                    socket.Close();
+                    watch.Stop();
+                    Output.Items.Add($"File transfered in {watch.ElapsedMilliseconds} ms");
+                    Output.Items.Add("---------File transfer done!---------");
+                }
+                catch (Exception e)
+                {
+                    // ignored
+                }
+            }
             
-            Output.Text += $"Client connected! With IP {socket.RemoteEndPoint}" + Environment.NewLine;
-            
-            const int bufferSize = 1024;
-            
-            var header = new byte[bufferSize];
-            socket.Receive(header);
-            var headerStr = Encoding.ASCII.GetString(header);
-            var split = headerStr.Split(new[] { "\r\n" }, StringSplitOptions.None);
-            var headers = split.Where(
-                s => s.Contains(':')).ToDictionary(
-                s => s[..s.IndexOf(":", StringComparison.Ordinal)],
-                s => s[(s.IndexOf(":", StringComparison.Ordinal) + 1)..]);
-            
-            var fileSize = Convert.ToInt32(headers["Content-length"]);
-            var bufferCount = Convert.ToInt32(Math.Ceiling((double)fileSize / (double)bufferSize));
-            var filename = headers["Filename"];
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
             var dialog = new SaveFileDialog
             {
-                FileName = filename
+                Title = "Select a Directory", // instead of default "Save As"
+                Filter = "Directory|*.this.directory", // Prevents displaying files
+                FileName = "select" // Filename will then be "select.this.directory"
             };
-            dialog.ShowDialog();
-            var fs = new FileStream(dialog.FileName, FileMode.OpenOrCreate);
-            
-            var count = 0;
-            while (fileSize > 0)
+            if (dialog.ShowDialog() != true) return;
+            var path = dialog.FileName;
+            path = path.Replace("\\select.this.directory", "");
+            path = path.Replace(".this.directory", "");
+            if (!Directory.Exists(path))
             {
-                count++;
-                var buffer = new byte[bufferSize];
-                var size = await socket.ReceiveAsync(buffer, SocketFlags.Partial);
-                fs.Write(buffer, 0, size);
-                fileSize -= size;
-                //update progress bar
-                FileBar.Value = count * 100 / (double)bufferCount;
+                Directory.CreateDirectory(path);
             }
-            fs.Close();
-            socket.Close();
-            Listener.Stop();
-            Output.Text += "File transfer done!" + Environment.NewLine;
-            CreateServer();
+            PathLabel.Content = path + "\\";
+            Settings.Default.OutputFolder = path;
+            Settings.Default.Save();
         }
     }
 }

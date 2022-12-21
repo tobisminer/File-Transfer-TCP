@@ -35,14 +35,20 @@ namespace FileTransferServer
                 return;
             }
             var window = new ServerWindow(port);
-            window.Show();
-
+            this.Hide();
+            window.ShowDialog();
+            this.Show();
+            window.Listener.Stop();
+            window.Close();
+  
         }
 
         private void CreateClient_Click(object sender, RoutedEventArgs e)
         {
             var client = new Client();
-            client.Show();
+            this.Hide();
+            client.ShowDialog();
+            this.Show();
         }
     }
 }

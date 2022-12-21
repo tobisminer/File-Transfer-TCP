@@ -12,11 +12,12 @@
             <ColumnDefinition Width="551*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Ultimate server" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="22" FontWeight="Bold" Width="780" HorizontalContentAlignment="Center" Grid.ColumnSpan="2" Height="37"/>
-        <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="10,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="281" Width="780" FontSize="20" Grid.ColumnSpan="2"/>
-
         <Label x:Name="IpLabel" Content="Server IP:" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Width="218" Height="37"/>
         <Label x:Name="PortLabel" Content="Server Port:" Margin="30,52,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Height="37" Grid.Column="1" HorizontalAlignment="Left" Width="185"/>
         <ProgressBar x:Name="FileBar" Height="35" Margin="10,89,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <Button Content="Select output folder" HorizontalAlignment="Left" Margin="10,133,0,0" VerticalAlignment="Top" FontSize="18" Width="178" Height="37" Click="Button_Click"/>
+        <ListBox x:Name="Output" Grid.ColumnSpan="2" Margin="10,175,10,10"/>
+        <Label x:Name="PathLabel" Content="" Margin="193,133,10,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Height="37" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>
