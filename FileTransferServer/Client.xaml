@@ -12,6 +12,7 @@
         <Label Content="Host IP address" HorizontalAlignment="Left" Margin="70,46,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.723,0.567" HorizontalContentAlignment="Center" Width="120"/>
         <Label Content="Port" HorizontalAlignment="Left" Margin="208,46,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.723,0.567" HorizontalContentAlignment="Center" Width="120"/>
         <TextBox x:Name="PortBox" HorizontalAlignment="Left" Margin="208,77,0,0" TextWrapping="Wrap" Text="23000" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Client" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" FontSize="22" FontWeight="Bold" Width="580" HorizontalContentAlignment="Center" Height="37"/>
 
     </Grid>
 </Window>

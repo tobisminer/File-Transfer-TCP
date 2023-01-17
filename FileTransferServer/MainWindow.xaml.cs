@@ -1,54 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
-namespace FileTransferServer
+namespace FileTransferServer;
+
+/// <summary>
+///     Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
+        InitializeComponent();
+    }
+
+    private void CreateServerBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (int.TryParse(PortBox.Text, out var port) == false)
         {
-            InitializeComponent();
+            MessageBox.Show("Port must be numeric!", "Port error", MessageBoxButton.OK);
+            return;
         }
 
-        private void CreateServerBtn_Click(object sender, RoutedEventArgs e)
-        { 
-            if (int.TryParse(PortBox.Text, out var port) == false)
-            {
-                MessageBox.Show("Port must be numeric!", "Port error", MessageBoxButton.OK);
-                return;
-            }
-            var window = new ServerWindow(port);
-            this.Hide();
-            window.ShowDialog();
-            this.Show();
-            window.Listener.Stop();
-            window.Close();
-  
-        }
+        var window = new ServerWindow(port);
+        Hide();
+        window.ShowDialog();
+        Show();
+        window.Listener.Stop();
+        window.Close();
+    }
 
-        private void CreateClient_Click(object sender, RoutedEventArgs e)
-        {
-            var client = new Client();
-            this.Hide();
-            client.ShowDialog();
-            this.Show();
-        }
+    private void CreateClient_Click(object sender, RoutedEventArgs e)
+    {
+        var client = new Client();
+        Hide();
+        client.ShowDialog();
+        Show();
     }
 }
