@@ -24,7 +24,6 @@ public partial class MainWindow : Window
         Hide();
         window.ShowDialog();
         Show();
-        window.Listener.Stop();
         window.Close();
     }
 
